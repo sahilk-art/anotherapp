@@ -1,0 +1,30 @@
+# Dependency directories
+node_modules/
+backend/*/node_modules/
+
+# Build outputs
+dist/
+backend/*/dist/
+build/
+app/cricheroes_app/build/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+backend/*/.env
+
+# Flutter/Dart
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# OS files
+.DS_Store
+Thumbs.db

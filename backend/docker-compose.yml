@@ -1,0 +1,115 @@
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+      - redis
+      - rabbitmq
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongodb
+
+  team-service:
+    build: ./team-service
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongodb
+
+  match-service:
+    build: ./match-service
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mongodb
+
+  scoring-service:
+    build: ./scoring-service
+    ports:
+      - "3005:3005"
+    depends_on:
+      - mongodb
+      - redis
+
+  tournament-service:
+    build: ./tournament-service
+    ports:
+      - "3006:3006"
+    depends_on:
+      - mongodb
+
+  analytics-service:
+    build: ./analytics-service
+    ports:
+      - "3007:3007"
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "3008:3008"
+    depends_on:
+      - rabbitmq
+
+  feed-service:
+    build: ./feed-service
+    ports:
+      - "3009:3009"
+    depends_on:
+      - mongodb
+
+  media-service:
+    build: ./media-service
+    ports:
+      - "3010:3010"
+
+  search-service:
+    build: ./search-service
+    ports:
+      - "3011:3011"
+    depends_on:
+      - mongodb
+
+  leaderboard-service:
+    build: ./leaderboard-service
+    ports:
+      - "3012:3012"
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:

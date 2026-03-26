@@ -1,0 +1,40 @@
+import 'package:flutter/material.dart';
+import 'presentation/screens/login_screen.dart';
+import 'presentation/screens/feed_screen.dart';
+import 'presentation/screens/tournament_list_screen.dart';
+import 'presentation/screens/leaderboard_screen.dart';
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _currentIndex = 0;
+  final List<Widget> _screens = [
+    const FeedScreen(),
+    const TournamentListScreen(),
+    const LeaderboardScreen(),
+    const Center(child: Text('Profile')),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _screens[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.feed), label: 'Feed'),
+          BottomNavigationBarItem(icon: Icon(Icons.emoji_events), label: 'Tournaments'),
+          BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: 'Leaderboard'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
+    );
+  }
+}
