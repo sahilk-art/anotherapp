@@ -3,6 +3,7 @@ import 'presentation/screens/login_screen.dart';
 import 'presentation/screens/feed_screen.dart';
 import 'presentation/screens/tournament_list_screen.dart';
 import 'presentation/screens/leaderboard_screen.dart';
+import 'presentation/screens/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -17,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
     const FeedScreen(),
     const TournamentListScreen(),
     const LeaderboardScreen(),
-    const Center(child: Text('Profile')),
+    const ProfileScreen(),
   ];
 
   @override

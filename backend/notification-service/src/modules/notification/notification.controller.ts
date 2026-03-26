@@ -1,23 +1,23 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload, EventPattern } from '@nestjs/microservices';
+import { NotificationService } from './notification.service';
 
 @Controller()
 export class NotificationController {
-  @MessagePattern('notifications.findAll')
-  async findAll(@Payload() data: any) { return []; }
+  constructor(private readonly notificationService: NotificationService) {}
 
-  @MessagePattern('notifications.getUnreadCount')
-  async getUnreadCount(@Payload() data: any) { return { count: 0 }; }
+  @MessagePattern('notifications.findAll')
+  async findAll(@Payload() data: any) {
+    return this.notificationService.findAll(data.userId);
+  }
 
   @MessagePattern('notifications.markAsRead')
-  async markAsRead(@Payload() data: any) { return { success: true }; }
+  async markAsRead(@Payload() data: any) {
+    return this.notificationService.markAsRead(data.id);
+  }
 
-  @MessagePattern('notifications.markAllAsRead')
-  async markAllAsRead(@Payload() data: any) { return { success: true }; }
-
-  @MessagePattern('notifications.remove')
-  async remove(@Payload() data: any) { return { success: true }; }
-
-  @MessagePattern('notifications.updateSettings')
-  async updateSettings(@Payload() data: any) { return { success: true }; }
+  @EventPattern('send_notification')
+  async handleSendNotification(@Payload() data: any) {
+    return this.notificationService.sendPushNotification(data);
+  }
 }

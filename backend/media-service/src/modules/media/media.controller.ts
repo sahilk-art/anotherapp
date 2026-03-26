@@ -1,26 +1,23 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MediaService } from './media.service';
 
 @Controller()
 export class MediaController {
+  constructor(private readonly mediaService: MediaService) {}
+
   @MessagePattern('media.uploadImage')
-  async uploadImage(@Payload() data: any) { return { url: 'http://example.com/image.jpg' }; }
+  async uploadImage(@Payload() data: any) { return this.mediaService.uploadImage(data); }
 
   @MessagePattern('media.uploadVideo')
-  async uploadVideo(@Payload() data: any) { return { url: 'http://example.com/video.mp4' }; }
-
-  @MessagePattern('media.uploadMultiple')
-  async uploadMultiple(@Payload() data: any) { return []; }
+  async uploadVideo(@Payload() data: any) { return this.mediaService.uploadVideo(data); }
 
   @MessagePattern('media.remove')
-  async remove(@Payload() data: any) { return { success: true }; }
-
-  @MessagePattern('media.findOne')
-  async findOne(@Payload() data: any) { return {}; }
+  async remove(@Payload() data: any) { return this.mediaService.remove(data.id); }
 
   @MessagePattern('media.uploadAvatar')
-  async uploadAvatar(@Payload() data: any) { return { url: 'http://example.com/avatar.jpg' }; }
+  async uploadAvatar(@Payload() data: any) { return this.mediaService.uploadImage(data); }
 
   @MessagePattern('media.uploadTeamLogo')
-  async uploadTeamLogo(@Payload() data: any) { return { url: 'http://example.com/logo.png' }; }
+  async uploadTeamLogo(@Payload() data: any) { return this.mediaService.uploadImage(data); }
 }
