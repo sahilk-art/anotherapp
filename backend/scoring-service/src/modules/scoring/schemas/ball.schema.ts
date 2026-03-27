@@ -34,6 +34,9 @@ export class Ball extends Document {
 
   @Prop({ type: Object })
   stateBefore: any;
+
+  @Prop({ unique: true, sparse: true })
+  clientBallId: string;
 }
 
 export const BallSchema = SchemaFactory.createForClass(Ball);

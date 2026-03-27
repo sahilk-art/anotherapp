@@ -32,6 +32,12 @@ export class ScoringController {
     return this.scoringClient.send('scoring.undoBall', { matchId });
   }
 
+  @Post(':matchId/sync-bulk')
+  @ApiOperation({ summary: 'Sync bulk offline balls' })
+  syncBulk(@Param('matchId') matchId: string, @Body('balls') balls: any[]) {
+    return this.scoringClient.send('scoring.syncBulk', { matchId, balls });
+  }
+
   @Post(':matchId/wicket')
   @ApiOperation({ summary: 'Record wicket' })
   recordWicket(@Param('matchId') matchId: string, @Body() data: any) {

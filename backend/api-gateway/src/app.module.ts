@@ -11,6 +11,7 @@ import { MatchController } from './match.controller';
 import { ScoringController } from './scoring.controller';
 import { TournamentController } from './tournament.controller';
 import { FeedController, LeaderboardController, SearchController, NotificationController, AnalyticsController, MediaController } from './remaining.controller';
+import { StreamingController, ChatController } from './new-services.controller';
 
 @Module({
   imports: [
@@ -128,6 +129,24 @@ import { FeedController, LeaderboardController, SearchController, NotificationCo
           queueOptions: { durable: false },
         },
       },
+      {
+        name: 'STREAMING_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
+          queue: 'streaming_queue',
+          queueOptions: { durable: false },
+        },
+      },
+      {
+        name: 'CHAT_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
+          queue: 'chat_queue',
+          queueOptions: { durable: false },
+        },
+      },
     ]),
   ],
   controllers: [
@@ -143,6 +162,8 @@ import { FeedController, LeaderboardController, SearchController, NotificationCo
     NotificationController,
     AnalyticsController,
     MediaController,
+    StreamingController,
+    ChatController,
   ],
   providers: [
     {

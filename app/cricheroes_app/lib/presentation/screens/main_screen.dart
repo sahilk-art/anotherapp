@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'presentation/screens/login_screen.dart';
-import 'presentation/screens/feed_screen.dart';
-import 'presentation/screens/tournament_list_screen.dart';
-import 'presentation/screens/leaderboard_screen.dart';
-import 'presentation/screens/profile_screen.dart';
+import 'home_screen.dart';
+import 'matches_screen.dart';
+import 'feed_screen.dart';
+import 'tournament_list_screen.dart';
+import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,25 +15,27 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
-    const FeedScreen(),
+    const HomeScreen(),
+    const MatchesScreen(),
+    const Center(child: Text('Score+')),
     const TournamentListScreen(),
-    const LeaderboardScreen(),
     const ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.feed), label: 'Feed'),
-          BottomNavigationBarItem(icon: Icon(Icons.emoji_events), label: 'Tournaments'),
-          BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: 'Leaderboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.sports_cricket_outlined), activeIcon: Icon(Icons.sports_cricket), label: 'Matches'),
+          BottomNavigationBarItem(icon: Icon(Icons.add_box_rounded, size: 35, color: Colors.blue), label: 'Score+'),
+          BottomNavigationBarItem(icon: Icon(Icons.emoji_events_outlined), activeIcon: Icon(Icons.emoji_events), label: 'Tournaments'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

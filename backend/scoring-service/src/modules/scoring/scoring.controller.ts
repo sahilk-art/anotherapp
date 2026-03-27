@@ -18,6 +18,9 @@ export class ScoringController {
   @MessagePattern('scoring.undoBall')
   async undoBall(@Payload() data: any) { return this.scoringService.undoBall(data.matchId); }
 
+  @MessagePattern('scoring.syncBulk')
+  async syncBulk(@Payload() data: any) { return this.scoringService.syncBulk(data.matchId, data.balls); }
+
   @MessagePattern('scoring.recordWicket')
   async recordWicket(@Payload() data: any) { return { success: true }; }
 
@@ -25,13 +28,13 @@ export class ScoringController {
   async recordExtras(@Payload() data: any) { return { success: true }; }
 
   @MessagePattern('scoring.selectBatsman')
-  async selectBatsman(@Payload() data: any) { return { success: true }; }
+  async selectBatsman(@Payload() data: any) { return this.scoringService.selectBatsman(data.matchId, data); }
 
   @MessagePattern('scoring.selectBowler')
-  async selectBowler(@Payload() data: any) { return { success: true }; }
+  async selectBowler(@Payload() data: any) { return this.scoringService.selectBowler(data.matchId, data); }
 
   @MessagePattern('scoring.swapBatsmen')
-  async swapBatsmen(@Payload() data: any) { return { success: true }; }
+  async swapBatsmen(@Payload() data: any) { return this.scoringService.swapBatsmen(data.matchId); }
 
   @MessagePattern('scoring.retireBatsman')
   async retireBatsman(@Payload() data: any) { return { success: true }; }
@@ -52,7 +55,7 @@ export class ScoringController {
   async getCurrentState(@Payload() data: any) { return this.scoringService.getCurrentState(data.matchId); }
 
   @MessagePattern('scoring.addPenalty')
-  async addPenalty(@Payload() data: any) { return { success: true }; }
+  async addPenalty(@Payload() data: any) { return this.scoringService.addPenalty(data.matchId, data.runs); }
 
   @MessagePattern('scoring.startSuperOver')
   async startSuperOver(@Payload() data: any) { return { success: true }; }

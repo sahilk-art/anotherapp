@@ -21,6 +21,25 @@ export class ScoringService {
     private gateway: ScoringGateway,
   ) {}
 
+  async syncBulk(matchId: string, balls: any[]) {
+    const results = [];
+    for (const ballData of balls) {
+      try {
+        // Idempotency check using clientBallId (assume it's in ballData)
+        const existing = await this.ballModel.findOne({ clientBallId: ballData.clientBallId });
+        if (existing) {
+          results.push({ clientBallId: ballData.clientBallId, status: 'SKIPPED' });
+          continue;
+        }
+        await this.recordBall(ballData);
+        results.push({ clientBallId: ballData.clientBallId, status: 'SYNCED' });
+      } catch (e) {
+        results.push({ clientBallId: ballData.clientBallId, status: 'FAILED', error: e.message });
+      }
+    }
+    return results;
+  }
+
   async start(matchId: string) {
     const match = await this.matchModel.findById(matchId);
     if (!match) throw new NotFoundException('Match not found');
@@ -172,6 +191,7 @@ export class ScoringService {
       isLegal,
       isFreeHit: stateBefore.isFreeHit,
       stateBefore,
+      clientBallId: data.clientBallId,
     });
     await ball.save();
 

@@ -1,87 +1,93 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../blocs/scoring_bloc.dart';
 
-class ScoringScreen extends StatelessWidget {
-  const ScoringScreen({super.key});
+class ScoringScreen extends StatefulWidget {
+  final String matchId;
+  const ScoringScreen({super.key, required this.matchId});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Scoring')),
-      body: Column(
-        children: [
-          const ScoreboardHeader(),
-          const CurrentOverDisplay(),
-          const BatsmanBowlerInfo(),
-          const Spacer(),
-          const ScoringButtons(),
-        ],
-      ),
-    );
-  }
+  State<ScoringScreen> createState() => _ScoringScreenState();
 }
 
-class ScoreboardHeader extends StatelessWidget {
-  const ScoreboardHeader({super.key});
+class _ScoringScreenState extends State<ScoringScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ScoringBloc>().add(InitScoring(widget.matchId));
+  }
+
+  void _recordBall(int runs, {String extraType = 'NONE', bool isWicket = false}) {
+    context.read<ScoringBloc>().add(RecordBall({
+      'matchId': widget.matchId,
+      'runs': runs,
+      'extraType': extraType,
+      'isWicket': isWicket,
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<ScoringBloc, ScoringState>(
+      builder: (context, state) {
+        if (state is ScoringLoading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        if (state is ScoringActive) {
+          final innings = state.innings;
+          return Scaffold(
+            appBar: AppBar(title: const Text('Live Scoring')),
+            body: Column(
+              children: [
+                _buildScoreHeader(innings),
+                _buildScoringGrid(),
+              ],
+            ),
+          );
+        }
+        return const Scaffold(body: Center(child: Text('Something went wrong')));
+      },
+    );
+  }
+
+  Widget _buildScoreHeader(dynamic innings) {
     return Container(
       padding: const EdgeInsets.all(16),
       color: Colors.blue[900],
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          Text('India', style: TextStyle(color: Colors.white, fontSize: 24)),
-          Text('120/4 (15.2)', style: TextStyle(color: Colors.white, fontSize: 24)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('${innings['totalRuns']}/${innings['totalWickets']}', style: const TextStyle(color: Colors.white, fontSize: 24)),
+              Text('Overs: ${innings['totalOvers']}', style: const TextStyle(color: Colors.white)),
+            ],
+          ),
         ],
       ),
     );
   }
-}
 
-class CurrentOverDisplay extends StatelessWidget {
-  const CurrentOverDisplay({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: const Text('Over: 1 0 4 0 6 1'),
-    );
-  }
-}
-
-class BatsmanBowlerInfo extends StatelessWidget {
-  const BatsmanBowlerInfo({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+  Widget _buildScoringGrid() {
+    return Expanded(
+      child: GridView.count(
+        crossAxisCount: 3,
+        padding: const EdgeInsets.all(16),
         children: [
-          Column(children: [Text('Virat Kohli*'), Text('45 (32)')]),
-          Column(children: [Text('Jasprit Bumrah'), Text('2/18 (3.2)')]),
+          ...[0, 1, 2, 3, 4, 6].map((r) => _scoreBtn(r.toString(), () => _recordBall(r))),
+          _scoreBtn('WICKET', () => _recordBall(0, isWicket: true), color: Colors.red),
+          _scoreBtn('WIDE', () => _recordBall(0, extraType: 'WIDE'), color: Colors.orange),
+          _scoreBtn('NO BALL', () => _recordBall(0, extraType: 'NO_BALL'), color: Colors.orange),
         ],
       ),
     );
   }
-}
 
-class ScoringButtons extends StatelessWidget {
-  const ScoringButtons({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          for (var i = 0; i <= 6; i++)
-            ElevatedButton(onPressed: () {}, child: Text('$i')),
-          ElevatedButton(onPressed: () {}, child: const Text('W')),
-          ElevatedButton(onPressed: () {}, child: const Text('Wd')),
-          ElevatedButton(onPressed: () {}, child: const Text('Nb')),
-        ],
+  Widget _scoreBtn(String label, VoidCallback onTap, {Color color = Colors.blue}) {
+    return Card(
+      color: color,
+      child: InkWell(
+        onTap: onTap,
+        child: Center(child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
       ),
     );
   }
