@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsDateString, IsEnum, IsMongoId, IsOptional } from 'class-validator';
-import { MatchType } from '../../../shared/enums';
+import { MatchType } from '../../../../../shared/enums';
 
 export class CreateMatchDto {
   @IsNotEmpty()

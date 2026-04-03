@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Match } from './schemas/match.schema';
 import { Innings } from './schemas/innings.schema';
 import { ClientProxy } from '@nestjs/microservices';
-import { MatchStatus } from '../../../shared/enums';
+import { MatchStatus } from '../../../../../shared/enums';
 
 @Injectable()
 export class MatchService {

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { PaymentType, PaymentStatus, PaymentGateway } from '../../../shared/enums';
+import { PaymentType, PaymentStatus, PaymentGateway } from '../../../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class Payment extends Document {

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { UserRole, Gender, BattingStyle, BowlingStyle, PlayerType } from '../../../shared/enums';
+import { UserRole, Gender, BattingStyle, BowlingStyle, PlayerType } from '../../../../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class User extends Document {
@@ -94,6 +94,38 @@ export class User extends Document {
     instagram: string;
     twitter: string;
     youtube: string;
+  };
+
+  @Prop({ type: Object })
+  scorerProfile?: {
+    isRegistered: boolean;
+    experience: string;
+    matchesScored: number;
+    rating: number;
+    fee: number;
+    isAvailable: boolean;
+  };
+
+  @Prop({ type: Object })
+  umpireProfile?: {
+    isRegistered: boolean;
+    certification: string;
+    experience: string;
+    matchesUmpired: number;
+    rating: number;
+    fee: number;
+    isAvailable: boolean;
+  };
+
+  @Prop({ type: Object })
+  commentatorProfile?: {
+    isRegistered: boolean;
+    languages: string[];
+    matchesCommented: number;
+    rating: number;
+    sampleUrl: string;
+    fee: number;
+    isAvailable: boolean;
   };
 }
 

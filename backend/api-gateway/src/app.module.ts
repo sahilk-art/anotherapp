@@ -7,12 +7,13 @@ import { LoggingMiddleware } from './common/middleware/logging.middleware';
 import { AuthController } from './auth.controller';
 import { UserController } from './user.controller';
 import { TeamController } from './team.controller';
-import { MatchController } from './match.controller';
+import { MatchController, ConfigController } from './match.controller';
 import { ScoringController } from './scoring.controller';
 import { TournamentController } from './tournament.controller';
 import { FeedController, LeaderboardController, SearchController, NotificationController, AnalyticsController, MediaController } from './remaining.controller';
 import { StreamingController, ChatController, PaymentController, SubscriptionController, VenueController } from './new-services.controller';
 import { AdminController } from './admin.controller';
+import { CustomLogger } from './common/helpers/logger';
 
 @Module({
   imports: [
@@ -187,12 +188,14 @@ import { AdminController } from './admin.controller';
     SubscriptionController,
     AdminController,
     VenueController,
+    ConfigController,
   ],
   providers: [
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    CustomLogger,
   ],
 })
 export class AppModule implements NestModule {

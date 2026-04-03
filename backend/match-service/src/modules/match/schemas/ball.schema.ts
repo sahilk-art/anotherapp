@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { ExtraType, DismissalType, ShotType, PitchLength } from '../../../shared/enums';
+import { ExtraType, DismissalType, ShotType, PitchLength } from '../../../../../shared/enums';
 
 @Schema({ timestamps: { createdAt: true, updatedAt: false } })
 export class Ball extends Document {

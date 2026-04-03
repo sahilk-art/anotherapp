@@ -23,6 +23,11 @@ import '../presentation/screens/subscription_screen.dart';
 import '../presentation/screens/player_comparison_screen.dart';
 import '../presentation/screens/go_live_screen.dart';
 import '../presentation/screens/watch_live_screen.dart';
+import '../presentation/screens/register_as_scorer_screen.dart';
+import '../presentation/screens/find_scorer_screen.dart';
+import '../presentation/screens/commentary_screen.dart';
+import '../presentation/screens/highlights_screen.dart';
+import '../presentation/screens/maintenance_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/splash',
@@ -46,9 +51,14 @@ final appRouter = GoRouter(
     GoRoute(path: '/scoring/:matchId/live', builder: (context, state) => GoLiveScreen(matchId: state.pathParameters['matchId']!)),
     GoRoute(path: '/match/:id', builder: (context, state) => const MatchDetailScreen()),
     GoRoute(path: '/match/:id/watch', builder: (context, state) => WatchLiveScreen(matchId: state.pathParameters['id']!)),
+    GoRoute(path: '/match/:id/commentary', builder: (context, state) => CommentaryScreen(matchId: state.pathParameters['id']!)),
+    GoRoute(path: '/match/:id/highlights', builder: (context, state) => HighlightsScreen(matchId: state.pathParameters['id']!)),
     GoRoute(path: '/team/new', builder: (context, state) => const CreateTeamScreen()),
     GoRoute(path: '/tournament/new', builder: (context, state) => const CreateTournamentScreen()),
     GoRoute(path: '/tournament/:id', builder: (context, state) => const TournamentDetailScreen()),
     GoRoute(path: '/post/new', builder: (context, state) => const CreatePostScreen()),
+    GoRoute(path: '/register-as-scorer', builder: (context, state) => const RegisterAsScorerScreen()),
+    GoRoute(path: '/find-scorers', builder: (context, state) => const FindScorerScreen()),
+    GoRoute(path: '/maintenance', builder: (context, state) => const MaintenanceScreen(message: '')),
   ],
 );

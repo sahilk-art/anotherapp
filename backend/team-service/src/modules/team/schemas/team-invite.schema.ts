@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { InviteStatus } from '../../../shared/enums';
+import { InviteStatus } from '../../../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class TeamInvite extends Document {

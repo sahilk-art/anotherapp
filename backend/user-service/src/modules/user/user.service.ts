@@ -10,7 +10,7 @@ export class UserService {
   ) {}
 
   async findAll(query: any): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel.find().limit(query.limit || 20).exec();
   }
 
   async search(q: string): Promise<User[]> {
@@ -24,11 +24,42 @@ export class UserService {
   }
 
   async getStats(id: string): Promise<any> {
-    return { matches: 10, runs: 350, wickets: 12 };
+    const user = await this.findOne(id);
+    return user.stats || { matches: 0, runs: 0, wickets: 0 };
+  }
+
+  async getBattingStats(id: string) {
+    const user = await this.findOne(id);
+    return user.stats?.batting || {};
+  }
+
+  async getBowlingStats(id: string) {
+    const user = await this.findOne(id);
+    return user.stats?.bowling || {};
   }
 
   async update(id: string, data: any): Promise<User> {
     return this.userModel.findByIdAndUpdate(id, data, { new: true }).exec();
+  }
+
+  async registerScorer(userId: string, profile: any) {
+    return this.userModel.findByIdAndUpdate(userId, { scorerProfile: { ...profile, isRegistered: true } }, { new: true });
+  }
+
+  async registerUmpire(userId: string, profile: any) {
+    return this.userModel.findByIdAndUpdate(userId, { umpireProfile: { ...profile, isRegistered: true } }, { new: true });
+  }
+
+  async findNearbyScorers(lat: number, lng: number) {
+    return this.userModel.find({
+      'scorerProfile.isRegistered': true,
+      'location.coordinates': {
+        $near: {
+          $geometry: { type: 'Point', coordinates: [lng, lat] },
+          $maxDistance: 50000 // 50km
+        }
+      }
+    }).exec();
   }
 
   async follow(followerId: string, followingId: string) {

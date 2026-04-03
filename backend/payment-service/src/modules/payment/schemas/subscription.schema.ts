@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { SubscriptionPlan, BillingCycle } from '../../../shared/enums';
+import { SubscriptionPlan, BillingCycle } from '../../../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class Subscription extends Document {

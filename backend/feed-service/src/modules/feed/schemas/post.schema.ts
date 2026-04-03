@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { PostType, MediaType, Visibility } from '../../../shared/enums';
+import { PostType, MediaType, Visibility } from '../../../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class Post extends Document {

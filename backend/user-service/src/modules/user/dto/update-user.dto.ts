@@ -1,5 +1,5 @@
 import { IsOptional, IsString, IsEnum } from 'class-validator';
-import { UserRole } from '../../../shared/enums';
+import { UserRole } from '../../../../../shared/enums';
 
 export class UpdateUserDto {
   @IsOptional()

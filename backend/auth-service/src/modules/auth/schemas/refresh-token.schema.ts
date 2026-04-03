@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { DeviceType } from '../../../shared/enums';
+import { DeviceType } from '../../../../../shared/enums';
 
 @Schema({ timestamps: { createdAt: true, updatedAt: false } })
 export class RefreshToken extends Document {

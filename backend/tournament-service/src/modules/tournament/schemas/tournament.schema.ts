@@ -7,7 +7,7 @@ import {
   TournamentTeamStatus,
   RoundType,
   TournamentStatus,
-} from '../../../shared/enums';
+} from '../../../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class Tournament extends Document {

@@ -18,8 +18,23 @@ export class UserController {
   @MessagePattern('users.getStats')
   async getStats(@Payload() data: any) { return this.userService.getStats(data.id); }
 
+  @MessagePattern('users.getBattingStats')
+  async getBattingStats(@Payload() data: any) { return this.userService.getBattingStats(data.id); }
+
+  @MessagePattern('users.getBowlingStats')
+  async getBowlingStats(@Payload() data: any) { return this.userService.getBowlingStats(data.id); }
+
   @MessagePattern('users.updateProfile')
   async updateProfile(@Payload() data: any) { return this.userService.update(data.id, data); }
+
+  @MessagePattern('users.registerScorer')
+  async registerScorer(@Payload() data: any) { return this.userService.registerScorer(data.userId, data.profile); }
+
+  @MessagePattern('users.registerUmpire')
+  async registerUmpire(@Payload() data: any) { return this.userService.registerUmpire(data.userId, data.profile); }
+
+  @MessagePattern('users.findNearbyScorers')
+  async findNearbyScorers(@Payload() data: any) { return this.userService.findNearbyScorers(data.lat, data.lng); }
 
   @MessagePattern('users.follow')
   async follow(@Payload() data: any) { return this.userService.follow(data.userId, data.id); }
@@ -32,7 +47,6 @@ export class UserController {
 
   @EventPattern('match_completed')
   async handleMatchCompleted(@Payload() data: any) {
-    // Update user career stats logic
     console.log('Updating user career stats for players in match:', data.matchId);
   }
 }

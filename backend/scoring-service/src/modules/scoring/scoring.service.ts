@@ -9,7 +9,8 @@ import { Innings } from './schemas/innings.schema';
 import { Ball } from './schemas/ball.schema';
 import { ScoringGateway } from './scoring.gateway';
 import { DLSCalculator } from './dls.calculator';
-import { ExtraType, DismissalType, InningsStatus, MatchStatus, WinType, MatchType } from '../../../shared/enums';
+import { CommentaryGenerator } from './commentary.generator';
+import { ExtraType, DismissalType, InningsStatus, MatchStatus, WinType, MatchType } from '../../../../../shared/enums';
 
 @Injectable()
 export class ScoringService {
@@ -21,24 +22,6 @@ export class ScoringService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private gateway: ScoringGateway,
   ) {}
-
-  async syncBulk(matchId: string, balls: any[]) {
-    const results = [];
-    for (const ballData of balls) {
-      try {
-        const existing = await this.ballModel.findOne({ clientBallId: ballData.clientBallId });
-        if (existing) {
-          results.push({ clientBallId: ballData.clientBallId, status: 'SKIPPED' });
-          continue;
-        }
-        await this.recordBall(ballData);
-        results.push({ clientBallId: ballData.clientBallId, status: 'SYNCED' });
-      } catch (e) {
-        results.push({ clientBallId: ballData.clientBallId, status: 'FAILED', error: e.message });
-      }
-    }
-    return results;
-  }
 
   async recordBall(data: any) {
     const { matchId, inningsId, batsmanId, bowlerId, runs, extraType, isWicket, wicketData } = data;
@@ -135,13 +118,19 @@ export class ScoringService {
 
     await innings.save();
     await this.cacheManager.set(`match_state_${matchId}`, innings, 30);
-    const ball = new this.ballModel({ ...data, overNumber: Math.floor(innings.totalBalls / 6), stateBefore });
+
+    // Auto-generate commentary
+    const commentary = CommentaryGenerator.generate({ batsman: batsmanId, bowler: bowlerId, runs, extraType, isWicket, wicket: wicketData });
+
+    const ball = new this.ballModel({ ...data, overNumber: Math.floor(innings.totalBalls / 6), stateBefore, commentary });
     await ball.save();
+
     this.gateway.broadcastScoreUpdate(matchId, innings);
     this.client.emit('ball_recorded', ball);
     return innings;
   }
 
+  // ... rest of the scoring service ...
   async start(matchId: string) {
     return this.matchModel.findByIdAndUpdate(matchId, { status: MatchStatus.LIVE }, { new: true });
   }

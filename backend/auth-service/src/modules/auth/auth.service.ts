@@ -4,8 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { OTP } from './schemas/otp.schema';
 import { RefreshToken } from './schemas/refresh-token.schema';
-import { IAuthResponse } from '../../../shared/interfaces';
-import { OTPType } from '../../../shared/enums';
+import { IAuthResponse } from '../../../../shared/interfaces';
+import { OTPType } from '../../../../../shared/enums';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

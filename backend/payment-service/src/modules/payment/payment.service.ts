@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Payment } from './schemas/payment.schema';
 import { Subscription } from './schemas/subscription.schema';
-import { PaymentStatus, PaymentGateway } from '../../../shared/enums';
+import { PaymentStatus, PaymentGateway } from '../../../../../shared/enums';
 
 @Injectable()
 export class PaymentService {

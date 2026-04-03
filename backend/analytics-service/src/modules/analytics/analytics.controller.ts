@@ -16,6 +16,11 @@ export class AnalyticsController {
     return this.analyticsService.getMVP(data.matchId);
   }
 
+  @MessagePattern('analytics.getHighlights')
+  async getHighlights(@Payload() data: any) {
+    return this.analyticsService.generateHighlights(data.matchId);
+  }
+
   @MessagePattern('analytics.compare')
   async comparePlayers(@Payload() data: any) {
     return this.analyticsService.comparePlayers(data.player1, data.player2);
@@ -29,6 +34,5 @@ export class AnalyticsController {
   @EventPattern('milestone_reached')
   async handleMilestone(@Payload() data: any) {
     console.log(`User ${data.userId} reached milestone: ${data.type}`);
-    // Additional logic for milestone achievement unlocking
   }
 }

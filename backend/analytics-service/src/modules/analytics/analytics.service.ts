@@ -4,7 +4,6 @@ import { Model, Types } from 'mongoose';
 import { Match } from './schemas/match.schema';
 import { Innings } from './schemas/innings.schema';
 import { Ball } from './schemas/ball.schema';
-import { Achievement, UserAchievement } from './schemas/achievement.schema';
 
 @Injectable()
 export class AnalyticsService {
@@ -12,21 +11,49 @@ export class AnalyticsService {
     @InjectModel(Match.name) private matchModel: Model<Match>,
     @InjectModel(Innings.name) private inningsModel: Model<Innings>,
     @InjectModel(Ball.name) private ballModel: Model<Ball>,
-    @InjectModel(Achievement.name) private achievementModel: Model<Achievement>,
-    @InjectModel(UserAchievement.name) private userAchievementModel: Model<UserAchievement>,
   ) {}
 
-  async checkAchievements(userId: string, matchId: string) {
-    // Basic logic to check if user reached 50/100 runs in a match
-    const balls = await this.ballModel.find({ match: matchId, batsman: userId }).exec();
-    const runs = balls.reduce((sum, b) => sum + b.batsmanRuns, 0);
+  async generateHighlights(matchId: string) {
+    const balls = await this.ballModel.find({ match: matchId }).exec();
+    const highlights = [];
 
-    if (runs >= 50) {
-      const achievement = await this.achievementModel.findOne({ code: 'FIRST_FIFTY' });
-      if (achievement) {
-        await new this.userAchievementModel({ user: userId, achievement: achievement._id, match: matchId }).save();
+    for (const ball of balls) {
+      if (ball.isWicket) {
+        highlights.push({
+          type: 'WICKET',
+          importance: 8,
+          title: 'Wicket!',
+          description: ball.commentary,
+          ballId: ball._id,
+        });
+      } else if (ball.runs === 6) {
+        highlights.push({
+          type: 'SIX',
+          importance: 5,
+          title: 'Massive Six!',
+          description: ball.commentary,
+          ballId: ball._id,
+        });
+      } else if (ball.runs === 4) {
+        highlights.push({
+          type: 'FOUR',
+          importance: 3,
+          title: 'Beautiful Boundary',
+          description: ball.commentary,
+          ballId: ball._id,
+        });
       }
     }
+
+    return highlights.sort((a, b) => b.importance - a.importance);
+  }
+
+  async comparePlayers(player1Id: string, player2Id: string) {
+    return {
+      player1: { id: player1Id, name: 'Player 1', stats: { runs: 1200, average: 40, sr: 130 } },
+      player2: { id: player2Id, name: 'Player 2', stats: { runs: 1100, average: 45, sr: 125 } },
+      comparison: { runs: 'p1', average: 'p2', sr: 'p1' }
+    };
   }
 
   async getWagonWheel(matchId: string, playerId?: string) {
@@ -39,8 +66,10 @@ export class AnalyticsService {
     const balls = await this.ballModel.find({ match: matchId }).exec();
     const scores = {};
     balls.forEach(ball => {
-      scores[ball.batsman.toString()] = (scores[ball.batsman.toString()] || 0) + ball.batsmanRuns;
-      if (ball.isWicket) scores[ball.bowler.toString()] = (scores[ball.bowler.toString()] || 0) + 25;
+      const bId = ball.batsman.toString();
+      const bwId = ball.bowler.toString();
+      scores[bId] = (scores[bId] || 0) + ball.batsmanRuns;
+      if (ball.isWicket) scores[bwId] = (scores[bwId] || 0) + 25;
     });
     const sorted = Object.entries(scores).sort((a: any, b: any) => b[1] - a[1]);
     return sorted.length > 0 ? { playerId: sorted[0][0], points: sorted[0][1] } : null;
