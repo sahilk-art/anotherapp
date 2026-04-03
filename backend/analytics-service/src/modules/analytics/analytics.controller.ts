@@ -14,7 +14,17 @@ export class AnalyticsController {
 
   @MessagePattern('analytics.getMVP')
   async getMVP(@Payload() data: { matchId: string }): Promise<any> {
-    return this.analyticsService.getMVP(data.matchId);
+    return this.analyticsService.calculateMVP(data.matchId);
+  }
+
+  @MessagePattern('analytics.getPhaseAnalysis')
+  async getPhaseAnalysis(@Payload() data: { matchId: string }): Promise<any> {
+    return this.analyticsService.getPhaseAnalysis(data.matchId);
+  }
+
+  @MessagePattern('analytics.getHeadToHead')
+  async getHeadToHead(@Payload() data: { team1: string; team2: string }): Promise<any> {
+    return this.analyticsService.getHeadToHead(data.team1, data.team2);
   }
 
   @MessagePattern('analytics.getHighlights')
@@ -35,7 +45,6 @@ export class AnalyticsController {
   @EventPattern('ball_recorded')
   async handleBallRecorded(@Payload() data: { matchId: string; inningsId: string; totalRuns: number }) {
     console.log('Analytics received ball_recorded event. Updating charts for match:', data.matchId);
-    // Real logic to update Worm chart, Manhattan chart, and Wagon wheel would be called here
     await this.analyticsService.updateLiveCharts(data.matchId, data.inningsId);
   }
 
@@ -49,6 +58,5 @@ export class AnalyticsController {
   @EventPattern('milestone_reached')
   async handleMilestone(@Payload() data: { userId: string; type: string; value: number }) {
     console.log(`User ${data.userId} reached milestone: ${data.type} (${data.value})`);
-    // Logic to store milestone achievement in analytics DB
   }
 }

@@ -118,9 +118,9 @@ export class Tournament extends Document {
       points: { type: Number, default: 0 },
       netRunRate: { type: Number, default: 0.000 },
       runsScored: { type: Number, default: 0 },
-      oversFaced: { type: Number, default: 0.0 },
+      ballsFaced: { type: Number, default: 0 },
       runsConceded: { type: Number, default: 0 },
-      oversBowled: { type: Number, default: 0.0 },
+      ballsBowled: { type: Number, default: 0 },
       position: Number,
     }],
   })
@@ -135,9 +135,9 @@ export class Tournament extends Document {
     points: number;
     netRunRate: number;
     runsScored: number;
-    oversFaced: number;
+    ballsFaced: number;
     runsConceded: number;
-    oversBowled: number;
+    ballsBowled: number;
     position: number;
   }>;
 

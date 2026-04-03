@@ -1,6 +1,24 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+class WagonWheel extends StatelessWidget {
+  final List<dynamic> shots;
+  const WagonWheel({super.key, required this.shots});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'Cricket Wagon Wheel showing batting shot directions',
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: CustomPaint(
+          painter: WagonWheelPainter(shots),
+        ),
+      ),
+    );
+  }
+}
+
 class WagonWheelPainter extends CustomPainter {
   final List<dynamic> shots;
   WagonWheelPainter(this.shots);
@@ -44,8 +62,6 @@ class WagonWheelPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round;
 
       canvas.drawLine(center, endPoint, shotPaint);
-
-      // Draw a small dot at the end
       canvas.drawCircle(endPoint, 3, shotPaint);
     }
   }
