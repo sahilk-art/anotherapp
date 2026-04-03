@@ -16,9 +16,19 @@ export class AnalyticsController {
     return this.analyticsService.getMVP(data.matchId);
   }
 
-  @EventPattern('ball_recorded')
-  async handleBallRecorded(@Payload() data: any) {
-    // Process analytics updates for the ball
-    console.log('Processing analytics for ball:', data._id);
+  @MessagePattern('analytics.compare')
+  async comparePlayers(@Payload() data: any) {
+    return this.analyticsService.comparePlayers(data.player1, data.player2);
+  }
+
+  @MessagePattern('analytics.checkAchievements')
+  async checkAchievements(@Payload() data: any) {
+    return this.analyticsService.checkAchievements(data.userId, data.matchId);
+  }
+
+  @EventPattern('milestone_reached')
+  async handleMilestone(@Payload() data: any) {
+    console.log(`User ${data.userId} reached milestone: ${data.type}`);
+    // Additional logic for milestone achievement unlocking
   }
 }

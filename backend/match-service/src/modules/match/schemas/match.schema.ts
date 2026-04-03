@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { MatchStatus, MatchType, BallType, PitchType, TossDecision, WinType } from '../../../../shared/enums';
+import { MatchStatus, MatchType, BallType, PitchType, TossDecision, WinType } from '../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class Match extends Document {

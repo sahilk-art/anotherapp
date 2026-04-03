@@ -4,8 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { OTP } from './schemas/otp.schema';
 import { RefreshToken } from './schemas/refresh-token.schema';
-import { IAuthResponse } from '../../../../shared/interfaces';
-import { OTPType } from '../../../../../shared/enums';
+import { IAuthResponse } from '../../../shared/interfaces';
+import { OTPType } from '../../../shared/enums';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -26,46 +26,41 @@ export class AuthService {
       expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     });
     console.log(`Sending OTP ${otp} to ${data.phone}`);
-    return { success: true, message: 'OTP sent' };
+    return { success: true, otp }; // Return OTP for testing in development
   }
 
   async verifyOtp(data: any) {
     const record = await this.otpModel.findOne({ phone: data.phone, isVerified: false }).sort({ createdAt: -1 });
     if (!record || record.expiresAt < new Date()) throw new UnauthorizedException('OTP expired or not found');
-
     const isValid = await bcrypt.compare(data.otp, record.otp);
     if (!isValid) throw new UnauthorizedException('Invalid OTP');
-
     record.isVerified = true;
     await record.save();
-    return { success: true, message: 'OTP verified' };
+    return { success: true };
   }
 
   async register(data: any): Promise<IAuthResponse> {
-    const payload = { phone: data.phone, sub: data.userId || new Types.ObjectId().toHexString() };
-    const tokens = this.generateTokens(payload);
-    await this.saveRefreshToken(payload.sub, tokens.refreshToken);
-    return { ...tokens, user: data };
+    const userId = new Types.ObjectId().toHexString();
+    const tokens = this.generateTokens({ phone: data.phone, sub: userId });
+    await this.saveRefreshToken(userId, tokens.refreshToken);
+    return { ...tokens, user: { id: userId, phone: data.phone } };
   }
 
   async login(data: any): Promise<IAuthResponse> {
-    const payload = { phone: data.phone, sub: data.userId };
-    const tokens = this.generateTokens(payload);
-    await this.saveRefreshToken(payload.sub, tokens.refreshToken);
+    const tokens = this.generateTokens({ phone: data.phone, sub: data.userId });
+    await this.saveRefreshToken(data.userId, tokens.refreshToken);
     return { ...tokens, user: { id: data.userId, phone: data.phone } };
   }
 
   async loginPassword(data: any): Promise<IAuthResponse> {
-    // In a real app, verify email/password from user-service
-    const payload = { email: data.email, sub: data.userId || 'mock_id' };
-    const tokens = this.generateTokens(payload);
-    await this.saveRefreshToken(payload.sub, tokens.refreshToken);
-    return { ...tokens, user: { email: data.email, id: payload.sub } };
+    const tokens = this.generateTokens({ email: data.email, sub: 'user_id' });
+    await this.saveRefreshToken('user_id', tokens.refreshToken);
+    return { ...tokens, user: { email: data.email, id: 'user_id' } };
   }
 
   private generateTokens(payload: any) {
     return {
-      accessToken: this.jwtService.sign(payload, { expiresIn: '1h' }),
+      accessToken: this.jwtService.sign(payload, { expiresIn: '15m' }),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '30d' }),
     };
   }
@@ -83,7 +78,6 @@ export class AuthService {
     const payload = this.jwtService.verify(data.refreshToken);
     const storedToken = await this.refreshTokenModel.findOne({ userId: payload.sub, isRevoked: false }).sort({ createdAt: -1 });
     if (!storedToken) throw new UnauthorizedException('Invalid refresh token');
-
     const tokens = this.generateTokens({ phone: payload.phone, sub: payload.sub });
     storedToken.isRevoked = true;
     await storedToken.save();
@@ -96,15 +90,10 @@ export class AuthService {
     return { success: true };
   }
 
-  async forgotPassword(data: any) {
-    return { success: true, message: 'Reset password OTP sent' };
-  }
-
-  async resetPassword(data: any) {
-    return { success: true, message: 'Password reset successful' };
-  }
-
   async getMe(data: any) {
-    return { id: 'user_id', email: 'test@example.com' };
+    return { id: data.userId, phone: data.phone, role: 'PLAYER' };
   }
+
+  async forgotPassword(data: any) { return { success: true, message: 'Reset link sent' }; }
+  async resetPassword(data: any) { return { success: true, message: 'Password updated' }; }
 }

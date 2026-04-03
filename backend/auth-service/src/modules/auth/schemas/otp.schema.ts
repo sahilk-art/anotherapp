@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { OTPType } from '../../../../shared/enums';
+import { OTPType } from '../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class OTP extends Document {

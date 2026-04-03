@@ -18,6 +18,11 @@ import '../presentation/screens/edit_profile_screen.dart';
 import '../presentation/screens/fall_of_wicket_screen.dart';
 import '../presentation/screens/select_bowler_screen.dart';
 import '../presentation/screens/create_post_screen.dart';
+import '../presentation/screens/payment_screen.dart';
+import '../presentation/screens/subscription_screen.dart';
+import '../presentation/screens/player_comparison_screen.dart';
+import '../presentation/screens/go_live_screen.dart';
+import '../presentation/screens/watch_live_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/splash',
@@ -31,11 +36,16 @@ final appRouter = GoRouter(
     GoRoute(path: '/notifications', builder: (context, state) => const NotificationsScreen()),
     GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
     GoRoute(path: '/profile/edit', builder: (context, state) => const EditProfileScreen()),
+    GoRoute(path: '/compare', builder: (context, state) => const PlayerComparisonScreen()),
+    GoRoute(path: '/payments', builder: (context, state) => const PaymentScreen(amount: 499)),
+    GoRoute(path: '/subscriptions', builder: (context, state) => const SubscriptionScreen()),
     GoRoute(path: '/scoring/new', builder: (context, state) => const CreateMatchScreen()),
     GoRoute(path: '/scoring/:matchId', builder: (context, state) => ScoringScreen(matchId: state.pathParameters['matchId']!)),
     GoRoute(path: '/scoring/:matchId/wicket', builder: (context, state) => const FallOfWicketScreen()),
     GoRoute(path: '/scoring/:matchId/bowler', builder: (context, state) => const SelectBowlerScreen()),
+    GoRoute(path: '/scoring/:matchId/live', builder: (context, state) => GoLiveScreen(matchId: state.pathParameters['matchId']!)),
     GoRoute(path: '/match/:id', builder: (context, state) => const MatchDetailScreen()),
+    GoRoute(path: '/match/:id/watch', builder: (context, state) => WatchLiveScreen(matchId: state.pathParameters['id']!)),
     GoRoute(path: '/team/new', builder: (context, state) => const CreateTeamScreen()),
     GoRoute(path: '/tournament/new', builder: (context, state) => const CreateTournamentScreen()),
     GoRoute(path: '/tournament/:id', builder: (context, state) => const TournamentDetailScreen()),

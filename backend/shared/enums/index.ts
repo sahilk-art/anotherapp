@@ -72,6 +72,8 @@ export enum MatchType {
   CUSTOM = 'CUSTOM',
   THE_HUNDRED = 'THE_HUNDRED',
   PAIR_CRICKET = 'PAIR_CRICKET',
+  BOX_CRICKET = 'BOX_CRICKET',
+  INDOOR_CRICKET = 'INDOOR_CRICKET',
 }
 
 export enum BallType {
@@ -269,4 +271,34 @@ export enum LeaderboardCategory {
   MVP = 'MVP',
   MOST_MATCHES = 'MOST_MATCHES',
   MOST_MOM_AWARDS = 'MOST_MOM_AWARDS',
+}
+
+export enum PaymentType {
+  TOURNAMENT_ENTRY = 'TOURNAMENT_ENTRY',
+  PREMIUM_SUBSCRIPTION = 'PREMIUM_SUBSCRIPTION',
+  DONATION = 'DONATION',
+}
+
+export enum PaymentStatus {
+  CREATED = 'CREATED',
+  AUTHORIZED = 'AUTHORIZED',
+  CAPTURED = 'CAPTURED',
+  FAILED = 'FAILED',
+  REFUNDED = 'REFUNDED',
+}
+
+export enum PaymentGateway {
+  RAZORPAY = 'RAZORPAY',
+  STRIPE = 'STRIPE',
+}
+
+export enum SubscriptionPlan {
+  FREE = 'FREE',
+  PRO = 'PRO',
+  PREMIUM = 'PREMIUM',
+}
+
+export enum BillingCycle {
+  MONTHLY = 'MONTHLY',
+  YEARLY = 'YEARLY',
 }

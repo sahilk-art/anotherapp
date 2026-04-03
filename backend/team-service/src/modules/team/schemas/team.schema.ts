@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { TeamMemberRole } from '../../../../shared/enums';
+import { TeamMemberRole } from '../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class Team extends Document {

@@ -1,15 +1,20 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import '../../core/network/api_client.dart';
 
 class NotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  final ApiClient apiClient;
+
+  NotificationService({required this.apiClient});
 
   Future<void> init() async {
     NotificationSettings settings = await _fcm.requestPermission();
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       String? token = await _fcm.getToken();
-      print("FCM Token: $token");
-      // TODO: Send token to backend
+      if (token != null) {
+        await apiClient.dio.put('/users/fcm-token', data: {'fcmToken': token});
+      }
     }
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {

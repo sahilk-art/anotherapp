@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { MatchStatus, MatchType, BallType, PitchType, TossDecision, WinType } from '../../../../../shared/enums';
+import { MatchStatus, MatchType, BallType, PitchType, TossDecision, WinType } from '../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class Match extends Document {
@@ -27,6 +27,30 @@ export class Match extends Document {
   @Prop({ default: 1 }) currentInnings: number;
   @Prop({ type: Object }) result: { winner: Types.ObjectId; resultText: string; winMargin: number; winType: WinType };
   @Prop({ type: Types.ObjectId, ref: 'User' }) scorer: Types.ObjectId;
+
+  @Prop({ type: Object })
+  dlsData?: {
+    isApplied: boolean;
+    interruptions: Array<any>;
+    revisedTarget?: number;
+    parScore?: number;
+    resourcesTeamA?: number;
+    resourcesTeamB?: number;
+  };
+
+  @Prop({ type: Object })
+  testMatchData?: {
+    totalInnings: number;
+    sessions: Array<any>;
+    followOn: { isEnforced: boolean; trailAmount: number };
+  };
+
+  @Prop({ type: Object })
+  hundredFormat?: {
+    totalBalls: number;
+    ballsPerSet: number;
+    changeEndAfter: number;
+  };
 }
 
 export const MatchSchema = SchemaFactory.createForClass(Match);

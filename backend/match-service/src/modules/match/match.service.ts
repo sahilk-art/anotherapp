@@ -14,6 +14,35 @@ export class MatchService {
     @Inject('RABBITMQ_SERVICE') private client: ClientProxy,
   ) {}
 
+  async getOgMetadata(id: string) {
+    const match = await this.matchModel.findById(id).populate('teamA.team teamB.team');
+    if (!match) throw new NotFoundException('Match not found');
+
+    return `
+      <html>
+        <head>
+          <meta property="og:title" content="${match.matchTitle || 'Cricket Match'}" />
+          <meta property="og:description" content="${match.teamA.teamName} vs ${match.teamB.teamName} - Live Score" />
+          <meta property="og:image" content="https://api.cricheroes.com/v1/matches/${id}/og-image" />
+        </head>
+        <body>Redirecting...</body>
+      </html>
+    `;
+  }
+
+  async getOgImage(id: string) {
+    // In real app, generate image using node-canvas or @vercel/og
+    return { url: 'https://cdn.cricheroes.com/og/match_12345.png' };
+  }
+
+  async exportMatchPdf(id: string) {
+    return { url: `https://s3.amazonaws.com/reports/match_${id}.pdf` };
+  }
+
+  async exportMatchExcel(id: string) {
+    return { url: `https://s3.amazonaws.com/reports/match_${id}.xlsx` };
+  }
+
   async create(data: any): Promise<Match> {
     const createdMatch = new this.matchModel(data);
     const match = await createdMatch.save();
@@ -40,8 +69,7 @@ export class MatchService {
   }
 
   async getScorecard(id: string) {
-    const innings = await this.inningsModel.find({ match: id }).exec();
-    return innings;
+    return this.inningsModel.find({ match: id }).exec();
   }
 
   async setToss(id: string, data: any) {

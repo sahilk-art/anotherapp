@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { LeaderboardType, LeaderboardCategory } from '../../../../shared/enums';
+import { LeaderboardType, LeaderboardCategory } from '../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class Leaderboard extends Document {

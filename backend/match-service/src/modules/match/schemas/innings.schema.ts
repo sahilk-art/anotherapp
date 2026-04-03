@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { InningsStatus, DismissalType } from '../../../../shared/enums';
+import { InningsStatus, DismissalType } from '../../../shared/enums';
 
 @Schema({ timestamps: true })
 export class Innings extends Document {

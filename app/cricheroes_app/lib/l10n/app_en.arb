@@ -1,0 +1,9 @@
+{
+  "appName": "CricHeroes",
+  "home": "Home",
+  "matches": "Matches",
+  "tournaments": "Tournaments",
+  "profile": "Profile",
+  "startMatch": "Start Match",
+  "wicketFallen": "Wicket Fallen!"
+}

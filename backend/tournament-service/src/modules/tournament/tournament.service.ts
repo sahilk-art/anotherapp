@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Tournament } from './schemas/tournament.schema';
-import { RoundType, TournamentStatus } from '../../../../../shared/enums';
+import { RoundType, TournamentStatus } from '../../../shared/enums';
 
 @Injectable()
 export class TournamentService {

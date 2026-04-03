@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Team } from './schemas/team.schema';
 import { TeamInvite } from './schemas/team-invite.schema';
 
@@ -12,12 +12,15 @@ export class TeamService {
   ) {}
 
   async create(data: any): Promise<Team> {
-    const createdTeam = new this.teamModel(data);
+    const createdTeam = new this.teamModel({
+      ...data,
+      inviteCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+    });
     return createdTeam.save();
   }
 
   async findAll(query: any): Promise<Team[]> {
-    return this.teamModel.find().exec();
+    return this.teamModel.find().limit(query.limit || 20).exec();
   }
 
   async search(q: string): Promise<Team[]> {
@@ -25,7 +28,7 @@ export class TeamService {
   }
 
   async findMyTeams(userId: string): Promise<Team[]> {
-    return this.teamModel.find({ owner: userId }).exec();
+    return this.teamModel.find({ 'members.player': userId }).exec();
   }
 
   async findOne(id: string): Promise<Team> {
@@ -58,7 +61,7 @@ export class TeamService {
   async join(id: string, inviteCode: string) {
     const team = await this.teamModel.findOne({ _id: id, inviteCode }).exec();
     if (!team) throw new NotFoundException('Invalid invite code');
-    // Implementation
-    return { success: true };
+    // Implement user joining logic here if needed
+    return { success: true, teamName: team.name };
   }
 }
