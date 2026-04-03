@@ -1,0 +1,19 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths: ['app/**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.x'
+          channel: 'stable'
+      - run: cd app/cricheroes_app && flutter pub get
+      - run: cd app/cricheroes_app && flutter analyze
+      - run: cd app/cricheroes_app && flutter test

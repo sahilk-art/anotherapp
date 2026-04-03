@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streaming-service
+  namespace: cricheroes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streaming-service
+  template:
+    metadata:
+      labels:
+        app: streaming-service
+    spec:
+      containers:
+      - name: streaming-service
+        image: cricheroes/streaming-service:latest
+        ports:
+        - containerPort: 3014
+        envFrom:
+        - configMapRef:
+            name: streaming-service-config
+        resources:
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+          requests:
+            cpu: "1000m"
+            memory: "2Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streaming-service
+  namespace: cricheroes
+spec:
+  selector:
+    app: streaming-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3014
+  type: ClusterIP

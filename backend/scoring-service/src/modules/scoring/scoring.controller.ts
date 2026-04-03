@@ -1,62 +1,58 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UsePipes, ValidationPipe, UseFilters } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ScoringService } from './scoring.service';
+import { RecordBallDto, UndoBallDto, SelectBatsmanDto, SelectBowlerDto } from '../../../../shared/dto/scoring.dto';
+import { Innings } from './schemas/innings.schema';
+import { Match } from './schemas/match.schema';
 
 @Controller()
+@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class ScoringController {
   constructor(private readonly scoringService: ScoringService) {}
 
   @MessagePattern('scoring.start')
-  async start(@Payload() data: any) { return this.scoringService.start(data.matchId); }
+  async start(@Payload() data: { matchId: string }): Promise<Match> {
+    return this.scoringService.start(data.matchId);
+  }
 
   @MessagePattern('scoring.innings.start')
-  async startInnings(@Payload() data: any) { return this.scoringService.startInnings(data.matchId, data); }
+  async startInnings(@Payload() data: { matchId: string } & Partial<Innings>): Promise<Innings> {
+    const { matchId, ...inningsData } = data;
+    return this.scoringService.startInnings(matchId, inningsData);
+  }
 
   @MessagePattern('scoring.recordBall')
-  async recordBall(@Payload() data: any) { return this.scoringService.recordBall(data); }
+  async recordBall(@Payload() data: RecordBallDto): Promise<Innings> {
+    return this.scoringService.recordBall(data);
+  }
 
   @MessagePattern('scoring.undoBall')
-  async undoBall(@Payload() data: any) { return this.scoringService.undoBall(data.matchId); }
-
-  @MessagePattern('scoring.syncBulk')
-  async syncBulk(@Payload() data: any) { return this.scoringService.syncBulk(data.matchId, data.balls); }
-
-  @MessagePattern('scoring.recordWicket')
-  async recordWicket(@Payload() data: any) { return { success: true }; }
-
-  @MessagePattern('scoring.recordExtras')
-  async recordExtras(@Payload() data: any) { return { success: true }; }
+  async undoBall(@Payload() data: { matchId: string }): Promise<Innings | null> {
+    return this.scoringService.undoBall(data.matchId);
+  }
 
   @MessagePattern('scoring.selectBatsman')
-  async selectBatsman(@Payload() data: any) { return this.scoringService.selectBatsman(data.matchId, data); }
+  async selectBatsman(@Payload() data: SelectBatsmanDto): Promise<Innings> {
+    return this.scoringService.selectBatsman(data);
+  }
 
   @MessagePattern('scoring.selectBowler')
-  async selectBowler(@Payload() data: any) { return this.scoringService.selectBowler(data.matchId, data); }
+  async selectBowler(@Payload() data: SelectBowlerDto): Promise<Innings> {
+    return this.scoringService.selectBowler(data);
+  }
 
   @MessagePattern('scoring.swapBatsmen')
-  async swapBatsmen(@Payload() data: any) { return this.scoringService.swapBatsmen(data.matchId); }
-
-  @MessagePattern('scoring.retireBatsman')
-  async retireBatsman(@Payload() data: any) { return { success: true }; }
-
-  @MessagePattern('scoring.endOver')
-  async endOver(@Payload() data: any) { return { success: true }; }
-
-  @MessagePattern('scoring.endInnings')
-  async endInnings(@Payload() data: any) { return { success: true }; }
+  async swapBatsmen(@Payload() data: { matchId: string }): Promise<Innings> {
+    return this.scoringService.swapBatsmen(data.matchId);
+  }
 
   @MessagePattern('scoring.endMatch')
-  async endMatch(@Payload() data: any) { return this.scoringService.endMatch(data.matchId, data); }
-
-  @MessagePattern('scoring.abandonMatch')
-  async abandonMatch(@Payload() data: any) { return { success: true }; }
+  async endMatch(@Payload() data: { matchId: string; result: string }): Promise<Match> {
+    return this.scoringService.endMatch(data.matchId, data.result);
+  }
 
   @MessagePattern('scoring.getCurrentState')
-  async getCurrentState(@Payload() data: any) { return this.scoringService.getCurrentState(data.matchId); }
-
-  @MessagePattern('scoring.addPenalty')
-  async addPenalty(@Payload() data: any) { return this.scoringService.addPenalty(data.matchId, data.runs); }
-
-  @MessagePattern('scoring.startSuperOver')
-  async startSuperOver(@Payload() data: any) { return { success: true }; }
+  async getCurrentState(@Payload() data: { matchId: string }): Promise<Innings | null> {
+    return this.scoringService.getCurrentState(data.matchId);
+  }
 }

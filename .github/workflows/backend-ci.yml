@@ -1,0 +1,34 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [
+          api-gateway, auth-service, user-service, team-service,
+          match-service, scoring-service, tournament-service,
+          analytics-service, notification-service, feed-service,
+          media-service, search-service, leaderboard-service,
+          streaming-service, chat-service, payment-service, venue-service
+        ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: cd backend/${{ matrix.service }} && npm ci
+      - name: Lint
+        run: cd backend/${{ matrix.service }} && npm run lint
+      - name: Unit Tests
+        run: cd backend/${{ matrix.service }} && npm run test
+      - name: Build
+        run: cd backend/${{ matrix.service }} && npm run build
